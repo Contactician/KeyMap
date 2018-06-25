@@ -1,3 +1,4 @@
+// This script writes and reads files
 
 // Create csInterface object, get UI data
 var csInterface = new CSInterface();
@@ -14,8 +15,8 @@ var hostAppPath = csInterface.getSystemPath(SystemPath.HOST_APPLICATION);
 // var appPath = csInterface.getSystemPath(SystemPath.APPLICATION); // same as EXTENSION
 
 var actionButton = document.getElementById('action');
-var actionNameInput = document.getElementById('actionName');
-var actionSetInput = document.getElementById('actionSet');
+var fileName = document.getElementById('fileName');
+var fileText = document.getElementById('text');
 
 var data = {
 	text: "none",
@@ -27,24 +28,36 @@ var data = {
 // Loading initial stack from libraries
 callDoc();
 buildUI();
-logSkin(appSkin);
 loadBorderWidth();
+
+// logSkin(skin) updates the skinInfo object
+// logSkin(csInterface.hostEnvironment.appSkinInfo)
+logSkin(appSkin);
+
 console.log(`Loading for ${appInfo.name}`);
 console.log(appInfo);
 // loadJSX(`json2.jsx`);  // if using stringify and parse in Extendscript
 
 
-
 actionButton.addEventListener("click", function(e){
-	data.actionName = actionNameInput.value;
-	data.actionSet = actionSetInput.value;
-	csInterface.evalScript(`doAction('${data.actionName}, ${data.actionSet}')`, catchMsg)
-	console.log(`name: ${data.actionName}, set: ${data.actionSet}`);
+	var path = logPath + fileName.value;
+  var data = fileText.value;
+  console.log(path + ", " + data);
+  var result = window.cep.fs.writeFile(path, data);
+  // var result = window.cep.fs.readFile(path);
+  if (0 == result.err) {
+       console.log("Success");
+       console.log(result);
+			 alert(`${fileName.value} successfully written`)
+  } else {
+       console.log(`Error ${result.err}`);
+  }
 }, false)
 
 function catchMsg(params){
 	console.log(params);
 }
+
 
 function getKeyShortcutPath() {
 	data.pathToHost = hostAppPath.substring(0, hostAppPath.indexOf("2018") + 4);
@@ -52,11 +65,11 @@ function getKeyShortcutPath() {
 	return data.pathToKeyMap;
 }
 
+console.log(getKeyShortcutPath());
 // scribe('write', 'something');
+
 // quickWriteFile(getKeyShortcutPath(), data.text);
 // quickReadFile(getKeyShortcutPath());
-
-console.log(getKeyShortcutPath());
 
 function quickWriteFile(pathTo, contents) {
 	var result = window.cep.fs.writeFile(pathTo, contents);
@@ -74,6 +87,7 @@ function quickReadFile(pathTo){
 	return result;
 }
 
+// writes and reads from the /log/scribe.jsx file
 function scribe(whichWay, contents){
 	var path = logPath + "scribe.jsx";
 	if (whichWay === 'write') {

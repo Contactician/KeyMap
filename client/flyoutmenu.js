@@ -5,7 +5,7 @@ var isFlipped = false;
 
   var menuXML = '<Menu> \
     <MenuItem Id="refresh" Label="Refresh panel" Enabled="true" Checked="false"/> \
-    <MenuItem Id="sendMsg" Label="Send Message" Enabled="true" Checked="false"/> \
+    <MenuItem Id="message" Label="Send Message" Enabled="true" Checked="false"/> \
     <MenuItem Id="scribe" Label="Scribe" Enabled="true" Checked="false"/> \
     \
     <MenuItem Label="---" /> \
@@ -15,13 +15,11 @@ var isFlipped = false;
 csInterface.setPanelFlyoutMenu(menuXML);
 csInterface.addEventListener("com.adobe.csxs.events.flyoutMenuClicked", setPanelCallback);
 
-
-
 function setPanelCallback(event) {
   if (event.data.menuId == "refresh") {
     location.reload();
-  } else if (event.data.menuId == "sendMsg") {
-    csInterface.evalScript(`getMsg()`, msgData);
+  } else if (event.data.menuId == "message") {
+    console.log("Working");
   } else if (event.data.menuId == "scribe") {
     var path = logPath + "scribe.js";
     var data = "This is a test";
